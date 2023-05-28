@@ -122,3 +122,5 @@ const blogSlice = createSlice({
     });
   },
 });
+
+export const blogReducer = blogSlice.reducer;

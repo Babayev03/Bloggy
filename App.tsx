@@ -1,12 +1,17 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import React from 'react';
+import {Provider} from 'react-redux';
+import {store} from './src/redux';
+import {NavigationContainer} from '@react-navigation/native';
+import TabMain from './src/navigation/tab/TabMain';
 
 const App = () => {
   return (
-    <View>
-      <Text>App</Text>
-    </View>
-  )
-}
+    <NavigationContainer>
+      <Provider store={store}>
+        <TabMain />
+      </Provider>
+    </NavigationContainer>
+  );
+};
 
-export default App
+export default App;
