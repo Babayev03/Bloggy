@@ -50,8 +50,75 @@ export const updateBlog = createAsyncThunk(
   },
 );
 
+export const deleteBlog = createAsyncThunk(
+  'blog/deleteBlog',
+  async (id: string) => {
+    const response = await axios.delete(
+      `https://64731455d784bccb4a3c3e14.mockapi.io/blogs/${id}`,
+    );
+    return response.data;
+  },
+);
+
 const blogSlice = createSlice({
   name: 'blog',
   initialState,
   reducers: {},
+  extraReducers: builder => {
+    builder.addCase(getAllblog.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(getAllblog.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.loading = false;
+    });
+    builder.addCase(getAllblog.rejected, (state, action) => {
+      state.error = action.error.message || '';
+      state.loading = false;
+    });
+    builder.addCase(getBlogById.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(getBlogById.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.loading = false;
+    });
+    builder.addCase(getBlogById.rejected, (state, action) => {
+      state.error = action.error.message || '';
+      state.loading = false;
+    });
+    builder.addCase(addBlog.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(addBlog.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.loading = false;
+    });
+    builder.addCase(addBlog.rejected, (state, action) => {
+      state.error = action.error.message || '';
+      state.loading = false;
+    });
+    builder.addCase(updateBlog.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(updateBlog.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.loading = false;
+    });
+    builder.addCase(updateBlog.rejected, (state, action) => {
+      state.error = action.error.message || '';
+      state.loading = false;
+    });
+    builder.addCase(deleteBlog.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(deleteBlog.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.loading = false;
+    });
+    builder.addCase(deleteBlog.rejected, (state, action) => {
+      state.error = action.error.message || '';
+      state.loading = false;
+    });
+  },
 });
