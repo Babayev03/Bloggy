@@ -81,7 +81,7 @@ const EditScreen = ({route, navigation}: any) => {
   return (
     <ScrollView style={containerStyle} showsVerticalScrollIndicator={false} >
       <View style={styles.header}>
-        <Text style={[styles.headerText, headerTextColor]}>Add Blog</Text>
+        <Text style={[styles.headerText, headerTextColor]}>Edit Blog</Text>
       </View>
       <View style={[styles.input, inputColor]}>
         <TextInput
