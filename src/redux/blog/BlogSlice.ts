@@ -3,7 +3,7 @@ import axios from 'axios';
 import {createAsyncThunk} from '@reduxjs/toolkit';
 
 interface BlogState {
-  data: [];
+  data: any[];
   loading: string;
   error: string;
 }
@@ -25,7 +25,7 @@ export const getBlogById = createAsyncThunk(
   'blog/getBlogById',
   async (id: string) => {
     console.log('id', id);
-    
+
     const response = await axios.get(
       `https://64731455d784bccb4a3c3e14.mockapi.io/blogs/${id}`,
     );
@@ -111,11 +111,11 @@ export const blogSlice = createSlice({
       state.error = action.error.message || '';
       state.loading = 'rejected';
     });
-    builder.addCase(deleteBlog.pending, (state, action) => {
-      state.loading = 'pending';
-    });
+    builder.addCase(deleteBlog.pending, (state, action) => {});
     builder.addCase(deleteBlog.fulfilled, (state, action) => {
-      state.data = action.payload;
+      state.data = state.data.filter(
+        (item: any) => item.id !== action.payload.id,
+      );
       state.loading = 'fulfilled';
     });
     builder.addCase(deleteBlog.rejected, (state, action) => {

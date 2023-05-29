@@ -7,14 +7,15 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {useEffect} from 'react';
-import {getAllblog} from '../../../redux/blog/BlogSlice';
+import {deleteBlog, getAllblog} from '../../../redux/blog/BlogSlice';
 import {AppDispatch, RootState} from '../../../redux';
 import {Dimensions} from 'react-native';
 import {useCallback} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
+import SvgDelete from '../../../assets/images/Delete';
 
 const WIDTH = Dimensions.get('window').width;
 
@@ -47,6 +48,10 @@ const MainScreen = ({navigation}: any) => {
     color: themeMode === 'dark' ? '#fff' : '#000',
   };
 
+  const handleRemove = (id:string) => {
+    dispatch(deleteBlog(id));
+  };
+
   const renderItem = ({item}: any) => {
     return (
       <TouchableOpacity
@@ -60,6 +65,9 @@ const MainScreen = ({navigation}: any) => {
             {item.title}
           </Text>
         </View>
+        <TouchableOpacity style={styles.delete} onPress={() => handleRemove(item.id)}>
+          <SvgDelete />
+        </TouchableOpacity>
       </TouchableOpacity>
     );
   };
@@ -135,5 +143,14 @@ const styles = StyleSheet.create({
   loadingContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  delete: {
+    position: 'absolute',
+    right: 5,
+    bottom: 10,
+    width: 40,
+    alignItems: 'center',
+    height: 40,
+    justifyContent: 'center',
   },
 });

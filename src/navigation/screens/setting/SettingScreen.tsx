@@ -13,6 +13,16 @@ const SettingScreen = () => {
     dispatch(toggleTheme());
   };
 
+  const buttonBackColor: any = {
+    backgroundColor: themeMode === 'dark' ? '#fff' : '#000',
+    borderWidth: 2,
+    borderColor: themeMode === 'dark' ? '#fff' : '#000',
+  };
+
+  const buttonTextColor: any = {
+    color: themeMode === 'dark' ? '#000' : '#fff',
+  };
+
   const containerStyle: any = {
     flex: 1,
     backgroundColor: themeMode === 'dark' ? '#000' : '#fff',
@@ -23,8 +33,8 @@ const SettingScreen = () => {
   return (
     <View style={[containerStyle]}>
       {themeMode === 'dark' ? <SvgDarkIcon /> : <SvgLightIcon />}
-      <TouchableOpacity style={styles.button} onPress={handleToggleTheme}>
-        <Text style={styles.buttonText}>Change Theme</Text>
+      <TouchableOpacity style={[styles.button, buttonBackColor]} onPress={()=> handleToggleTheme()}>
+        <Text style={[styles.buttonText, buttonTextColor]}>Add</Text>
       </TouchableOpacity>
     </View>
   );
@@ -43,6 +53,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 10,
     marginTop: 20,
-    paddingHorizontal: 20,
+    paddingHorizontal: 50,
   },
 });
