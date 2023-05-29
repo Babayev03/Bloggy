@@ -7,7 +7,7 @@ const Add = createNativeStackNavigator();
 const AddStack = () => {
   return (
     <Add.Navigator>
-      <Add.Screen name="Add" component={AddScreen} />
+      <Add.Screen name="Add" component={AddScreen} options={{headerShown:false}} />
     </Add.Navigator>
   );
 };

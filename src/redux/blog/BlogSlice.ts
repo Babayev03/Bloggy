@@ -4,13 +4,13 @@ import {createAsyncThunk} from '@reduxjs/toolkit';
 
 interface BlogState {
   data: [];
-  loading: boolean;
+  loading: string;
   error: string;
 }
 
 const initialState: BlogState = {
   data: [],
-  loading: false,
+  loading: 'pending' || 'fulfilled' || 'rejected',
   error: '',
 };
 
@@ -24,6 +24,8 @@ export const getAllblog = createAsyncThunk('blog/getAllblog', async () => {
 export const getBlogById = createAsyncThunk(
   'blog/getBlogById',
   async (id: string) => {
+    console.log('id', id);
+    
     const response = await axios.get(
       `https://64731455d784bccb4a3c3e14.mockapi.io/blogs/${id}`,
     );
@@ -60,65 +62,65 @@ export const deleteBlog = createAsyncThunk(
   },
 );
 
-const blogSlice = createSlice({
+export const blogSlice = createSlice({
   name: 'blog',
   initialState,
   reducers: {},
   extraReducers: builder => {
     builder.addCase(getAllblog.pending, (state, action) => {
-      state.loading = true;
+      state.loading = 'pending';
     });
     builder.addCase(getAllblog.fulfilled, (state, action) => {
       state.data = action.payload;
-      state.loading = false;
+      state.loading = 'fulfilled';
     });
     builder.addCase(getAllblog.rejected, (state, action) => {
       state.error = action.error.message || '';
-      state.loading = false;
+      state.loading = 'rejected';
     });
     builder.addCase(getBlogById.pending, (state, action) => {
-      state.loading = true;
+      state.loading = 'pending';
     });
     builder.addCase(getBlogById.fulfilled, (state, action) => {
       state.data = action.payload;
-      state.loading = false;
+      state.loading = 'fulfilled';
     });
     builder.addCase(getBlogById.rejected, (state, action) => {
       state.error = action.error.message || '';
-      state.loading = false;
+      state.loading = 'rejected';
     });
     builder.addCase(addBlog.pending, (state, action) => {
-      state.loading = true;
+      state.loading = 'pending';
     });
     builder.addCase(addBlog.fulfilled, (state, action) => {
       state.data = action.payload;
-      state.loading = false;
+      state.loading = 'fulfilled';
     });
     builder.addCase(addBlog.rejected, (state, action) => {
       state.error = action.error.message || '';
-      state.loading = false;
+      state.loading = 'rejected';
     });
     builder.addCase(updateBlog.pending, (state, action) => {
-      state.loading = true;
+      state.loading = 'pending';
     });
     builder.addCase(updateBlog.fulfilled, (state, action) => {
       state.data = action.payload;
-      state.loading = false;
+      state.loading = 'fulfilled';
     });
     builder.addCase(updateBlog.rejected, (state, action) => {
       state.error = action.error.message || '';
-      state.loading = false;
+      state.loading = 'rejected';
     });
     builder.addCase(deleteBlog.pending, (state, action) => {
-      state.loading = true;
+      state.loading = 'pending';
     });
     builder.addCase(deleteBlog.fulfilled, (state, action) => {
       state.data = action.payload;
-      state.loading = false;
+      state.loading = 'fulfilled';
     });
     builder.addCase(deleteBlog.rejected, (state, action) => {
       state.error = action.error.message || '';
-      state.loading = false;
+      state.loading = 'rejected';
     });
   },
 });
