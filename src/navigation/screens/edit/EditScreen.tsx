@@ -4,6 +4,8 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Alert,
+  ScrollView,
 } from 'react-native';
 import React from 'react';
 import {useDispatch, useSelector} from 'react-redux';
@@ -12,7 +14,6 @@ import {AppDispatch} from '../../../redux';
 import {addBlog, updateBlog} from '../../../redux/blog/BlogSlice';
 
 const EditScreen = ({route, navigation}: any) => {
-
   const {item} = route.params;
 
   const [title, setTitle] = useState<any>(item.title);
@@ -48,17 +49,37 @@ const EditScreen = ({route, navigation}: any) => {
   };
 
   const handleEditBlog = () => {
+    if (title === '' || description === '') {
+      Alert.alert('Empty Inputs', 'Please Fill Inputs Then Press Add Again', [
+        {text: 'OK'},
+      ]);
+      return;
+    } else if (title.length < 5 || description.length < 5) {
+      Alert.alert(
+        'Invalid Inputs',
+        'Please Fill Inputs With 5 Characters At Least Then Press Add Again',
+        [{text: 'OK'}],
+      );
+      return;
+    } else if (title.length > 50) {
+      Alert.alert(
+        'Invalid Inputs',
+        'Please Fill Title Input With 20 Characters At Most Then Press Add Again',
+        [{text: 'OK'}],
+      );
+      return;
+    }
     const data = {
       id: item.id,
       title: title,
       description: description,
-    }
+    };
     dispatch(updateBlog(data));
     navigation.goBack();
   };
 
   return (
-    <View style={containerStyle}>
+    <ScrollView style={containerStyle} showsVerticalScrollIndicator={false} >
       <View style={styles.header}>
         <Text style={[styles.headerText, headerTextColor]}>Add Blog</Text>
       </View>
@@ -77,7 +98,14 @@ const EditScreen = ({route, navigation}: any) => {
           onChangeText={setDescription}
           placeholder="Description"
           placeholderTextColor={placeHolderTextColor}
-          style={{color: placeHolderTextColor, fontSize: 18}}
+          style={{
+            color: placeHolderTextColor,
+            fontSize: 18,
+            textAlignVertical: 'top',
+            width: '100%',
+          }}
+          multiline={true}
+          numberOfLines={3}
         />
       </View>
       <TouchableOpacity
@@ -85,7 +113,7 @@ const EditScreen = ({route, navigation}: any) => {
         onPress={() => handleEditBlog()}>
         <Text style={[styles.buttonText, buttonTextColor]}>Edit</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 };
 

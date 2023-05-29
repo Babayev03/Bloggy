@@ -45,7 +45,7 @@ const DetailScreen = ({route, navigation}: any) => {
   };
 
   return (
-    <ScrollView style={containerStyle}>
+    <ScrollView style={containerStyle} showsVerticalScrollIndicator={false}>
       {data.loading === 'pending' ? null : (
         <>
           <TouchableOpacity

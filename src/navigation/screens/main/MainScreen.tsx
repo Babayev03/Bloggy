@@ -87,9 +87,12 @@ const MainScreen = ({navigation}: any) => {
       </View>
       <View style={styles.card}>
         <FlatList
+        refreshing={false}
+        onRefresh={getAllBlog}
           data={data.data}
           renderItem={renderItem}
           keyExtractor={(item: any) => item.id}
+          showsVerticalScrollIndicator={false}
         />
       </View>
     </View>

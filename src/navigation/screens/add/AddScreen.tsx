@@ -4,6 +4,8 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Alert,
+  ScrollView,
 } from 'react-native';
 import React from 'react';
 import {useDispatch, useSelector} from 'react-redux';
@@ -45,6 +47,27 @@ const AddScreen = () => {
   };
 
   const handleAddBlog = () => {
+    if (title === '' || description === '') {
+      Alert.alert('Empty Inputs', 'Please Fill Inputs Then Press Add Again', [
+        {text: 'OK'},
+      ]);
+      return;
+    } else if (title.length < 5 || description.length < 5) {
+      Alert.alert(
+        'Invalid Inputs',
+        'Please Fill Inputs With 5 Characters At Least Then Press Add Again',
+        [{text: 'OK'}],
+      );
+      return;
+    } else if (title.length > 50) {
+      Alert.alert(
+        'Invalid Inputs',
+        'Please Fill Title Input With 20 Characters At Most Then Press Add Again',
+        [{text: 'OK'}],
+      );
+      return;
+    }
+
     const blog = {
       title: title,
       description: description,
@@ -56,7 +79,7 @@ const AddScreen = () => {
   };
 
   return (
-    <View style={containerStyle}>
+    <ScrollView style={containerStyle} showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
         <Text style={[styles.headerText, headerTextColor]}>Add Blog</Text>
       </View>
@@ -75,7 +98,14 @@ const AddScreen = () => {
           onChangeText={setDescription}
           placeholder="Description"
           placeholderTextColor={placeHolderTextColor}
-          style={{color: placeHolderTextColor, fontSize: 18}}
+          style={{
+            color: placeHolderTextColor,
+            fontSize: 18,
+            textAlignVertical: 'top',
+            width: '100%',
+          }}
+          multiline={true}
+          numberOfLines={3}
         />
       </View>
       <TouchableOpacity
@@ -83,7 +113,7 @@ const AddScreen = () => {
         onPress={() => handleAddBlog()}>
         <Text style={[styles.buttonText, buttonTextColor]}>Add</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 };
 
