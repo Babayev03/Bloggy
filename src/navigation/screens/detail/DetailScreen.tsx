@@ -54,7 +54,9 @@ const DetailScreen = ({route, navigation}: any) => {
             <SvgArrow stroke={themeMode === 'dark' ? '#fff' : '#000'} />
           </TouchableOpacity>
           <View style={styles.imageContainer}>
-            <Image source={{uri: data.data.avatar}} style={styles.image} />
+            {data.data.avatar ? (
+              <Image source={{uri: data.data.avatar}} style={styles.image} />
+            ) : null}
           </View>
           <View style={styles.titleContainer}>
             <Text style={[styles.title, titleText]}>{data.data.title}</Text>
