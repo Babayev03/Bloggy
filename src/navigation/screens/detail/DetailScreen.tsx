@@ -1,10 +1,11 @@
 import {
   View,
   Text,
-  ActivityIndicator,
   Image,
   StyleSheet,
   TouchableOpacity,
+  ScrollView,
+  Touchable,
 } from 'react-native';
 import React from 'react';
 import {useDispatch, useSelector} from 'react-redux';
@@ -35,8 +36,16 @@ const DetailScreen = ({route, navigation}: any) => {
     color: themeMode === 'dark' ? '#fff' : '#000',
   };
 
+  const buttonBackColor: any = {
+    backgroundColor: themeMode === 'dark' ? '#fff' : '#000',
+  };
+
+  const buttonTextColor: any = {
+    color: themeMode === 'dark' ? '#000' : '#fff',
+  };
+
   return (
-    <View style={containerStyle}>
+    <ScrollView style={containerStyle}>
       {data.loading === 'pending' ? null : (
         <>
           <TouchableOpacity
@@ -53,9 +62,14 @@ const DetailScreen = ({route, navigation}: any) => {
           <View style={styles.descriptionContainer}>
             <Text style={styles.description}>{data.data.description}</Text>
           </View>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Edit', {item: data.data})}
+            style={[styles.editButton, buttonBackColor]}>
+            <Text style={[styles.editText, buttonTextColor]}>Edit</Text>
+          </TouchableOpacity>
         </>
       )}
-    </View>
+    </ScrollView>
   );
 };
 
@@ -89,5 +103,18 @@ const styles = StyleSheet.create({
   description: {
     color: 'gray',
     fontSize: 20,
+  },
+  editButton: {
+    width: 200,
+    height: 50,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginVertical: 25,
+  },
+  editText: {
+    fontSize: 20,
+    fontWeight: 'bold',
   },
 });

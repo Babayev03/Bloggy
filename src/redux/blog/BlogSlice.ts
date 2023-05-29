@@ -46,7 +46,7 @@ export const updateBlog = createAsyncThunk(
   async (item: any) => {
     const response = await axios.put(
       `https://64731455d784bccb4a3c3e14.mockapi.io/blogs/${item.id}`,
-      item,
+      {title: item.title, description: item.description},
     );
     return response.data;
   },
