@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Touchable,
 } from 'react-native';
 import React from 'react';
 import {useDispatch, useSelector} from 'react-redux';

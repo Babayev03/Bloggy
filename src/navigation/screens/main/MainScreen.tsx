@@ -7,9 +7,8 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
-import React, {useState} from 'react';
+import React from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {useEffect} from 'react';
 import {deleteBlog, getAllblog} from '../../../redux/blog/BlogSlice';
 import {AppDispatch, RootState} from '../../../redux';
 import {Dimensions} from 'react-native';
@@ -65,7 +64,9 @@ const MainScreen = ({navigation}: any) => {
         <View style={styles.image}>
           <Image source={{uri: item.avatar}} style={styles.image} />
           <View style={styles.dateImage}>
-            <Text style={{color: '#000',fontWeight:'500'}}>{formatDate(item.createdAt)}</Text>
+            <Text style={{color: '#000', fontWeight: '500'}}>
+              {formatDate(item.createdAt)}
+            </Text>
           </View>
         </View>
         <View style={styles.cardText}>

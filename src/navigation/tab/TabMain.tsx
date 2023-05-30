@@ -6,7 +6,7 @@ import SettingStack from '../stacks/setting/SettingStack';
 import SvgSetting from '../../assets/images/Setting';
 import SvgHomeIcon from '../../assets/images/Home';
 import SvgAddIcon from '../../assets/images/AddIcon';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 
 const Tab = createBottomTabNavigator();
 

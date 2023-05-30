@@ -8,7 +8,11 @@ const Setting = createNativeStackNavigator();
 const SettingStack = () => {
   return (
     <Setting.Navigator>
-      <Setting.Screen name="Settiing" component={SettingScreen} options={{headerShown:false}} />
+      <Setting.Screen
+        name="Settiing"
+        component={SettingScreen}
+        options={{headerShown: false}}
+      />
     </Setting.Navigator>
   );
 };

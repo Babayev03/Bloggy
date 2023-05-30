@@ -11,7 +11,7 @@ import React from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {useState} from 'react';
 import {AppDispatch} from '../../../redux';
-import {addBlog, updateBlog} from '../../../redux/blog/BlogSlice';
+import {updateBlog} from '../../../redux/blog/BlogSlice';
 
 const EditScreen = ({route, navigation}: any) => {
   const {item} = route.params;
@@ -79,7 +79,7 @@ const EditScreen = ({route, navigation}: any) => {
   };
 
   return (
-    <ScrollView style={containerStyle} showsVerticalScrollIndicator={false} >
+    <ScrollView style={containerStyle} showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
         <Text style={[styles.headerText, headerTextColor]}>Edit Blog</Text>
       </View>

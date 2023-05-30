@@ -1,4 +1,4 @@
-import {blogReducer, blogSlice} from './blog/BlogSlice';
+import {blogSlice} from './blog/BlogSlice';
 import {configureStore} from '@reduxjs/toolkit';
 import {themeReducer} from './theme/ThemeSlice';
 
