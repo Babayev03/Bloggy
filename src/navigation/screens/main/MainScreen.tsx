@@ -16,6 +16,7 @@ import {Dimensions} from 'react-native';
 import {useCallback} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
 import SvgDelete from '../../../assets/images/Delete';
+import moment from 'moment';
 
 const WIDTH = Dimensions.get('window').width;
 
@@ -48,8 +49,12 @@ const MainScreen = ({navigation}: any) => {
     color: themeMode === 'dark' ? '#fff' : '#000',
   };
 
-  const handleRemove = (id:string) => {
+  const handleRemove = (id: string) => {
     dispatch(deleteBlog(id));
+  };
+
+  const formatDate = (date: string) => {
+    return moment(date).format('D MMMM');
   };
 
   const renderItem = ({item}: any) => {
@@ -59,13 +64,18 @@ const MainScreen = ({navigation}: any) => {
         style={styles.cardItem}>
         <View style={styles.image}>
           <Image source={{uri: item.avatar}} style={styles.image} />
+          <View style={styles.dateImage}>
+            <Text style={{color: '#000',fontWeight:'500'}}>{formatDate(item.createdAt)}</Text>
+          </View>
         </View>
         <View style={styles.cardText}>
           <Text style={[styles.cardItemText, cardItemTextColor]}>
             {item.title}
           </Text>
         </View>
-        <TouchableOpacity style={styles.delete} onPress={() => handleRemove(item.id)}>
+        <TouchableOpacity
+          style={styles.delete}
+          onPress={() => handleRemove(item.id)}>
           <SvgDelete />
         </TouchableOpacity>
       </TouchableOpacity>
@@ -87,8 +97,8 @@ const MainScreen = ({navigation}: any) => {
       </View>
       <View style={styles.card}>
         <FlatList
-        refreshing={false}
-        onRefresh={getAllBlog}
+          refreshing={false}
+          onRefresh={getAllBlog}
           data={data.data}
           renderItem={renderItem}
           keyExtractor={(item: any) => item.id}
@@ -155,5 +165,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 40,
     justifyContent: 'center',
+  },
+  dateImage: {
+    position: 'absolute',
+    bottom: 3,
+    left: 5,
+    backgroundColor: '#fff',
+    paddingVertical: 3,
+    paddingHorizontal: 5,
+    borderRadius: 10,
   },
 });
