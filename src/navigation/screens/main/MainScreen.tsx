@@ -6,8 +6,9 @@ import {
   Image,
   ActivityIndicator,
   TouchableOpacity,
+  TextInput,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {deleteBlog, getAllblog} from '../../../redux/blog/BlogSlice';
 import {AppDispatch, RootState} from '../../../redux';
@@ -19,6 +20,7 @@ import {useEffect} from 'react';
 const WIDTH = Dimensions.get('window').width;
 
 const MainScreen = ({navigation}: any) => {
+  const [searchQuery, setSearchQuery] = useState('');
   const dispatch = useDispatch<AppDispatch>();
 
   const getBlog = () => {
@@ -27,6 +29,7 @@ const MainScreen = ({navigation}: any) => {
 
   useEffect(() => {
     getBlog();
+    console.log('MainScreen');
   }, []);
   const data = useSelector((state: RootState) => state.blog);
 
@@ -51,6 +54,20 @@ const MainScreen = ({navigation}: any) => {
 
   const formatDate = (date: string) => {
     return moment(date).format('D MMMM');
+  };
+
+  const inputStyle: any = {
+    backgroundColor: themeMode === 'dark' ? '#000' : '#fff',
+    color: themeMode === 'dark' ? '#fff' : '#000',
+    borderColor: themeMode === 'dark' ? '#fff' : '#000',
+  };
+
+  const filteredData = data.datas.filter(item =>
+    item.title.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
+
+  const noBlogTextColor: any = {
+    color: themeMode === 'dark' ? '#fff' : '#000',
   };
 
   const renderItem = ({item}: any) => {
@@ -93,15 +110,28 @@ const MainScreen = ({navigation}: any) => {
       <View style={styles.header}>
         <Text style={[styles.headerText, headerTextColor]}>Blogs</Text>
       </View>
-      <View style={styles.card}>
-        <FlatList
-          refreshing={false}
-          onRefresh={getBlog}
-          data={data.datas}
-          renderItem={renderItem}
-          keyExtractor={(item: any) => item.id}
-          showsVerticalScrollIndicator={false}
+      <View style={styles.inputView}>
+        <TextInput
+          placeholder="🔍  Search"
+          placeholderTextColor={themeMode === 'dark' ? '#fff' : '#000'}
+          style={[styles.input, inputStyle]}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
         />
+      </View>
+      <View style={styles.card}>
+        {filteredData.length === 0 ? (
+          <Text style={[styles.noBlog, noBlogTextColor]}>No blogs found</Text>
+        ) : (
+          <FlatList
+            refreshing={false}
+            onRefresh={getBlog}
+            data={filteredData}
+            renderItem={renderItem}
+            keyExtractor={(item: any) => item.id}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
       </View>
     </View>
   );
@@ -124,7 +154,7 @@ const styles = StyleSheet.create({
   },
   cardItem: {
     flexDirection: 'row',
-    marginVertical: 10,
+    marginVertical: 5,
     width: WIDTH - 40,
     padding: 10,
     borderRadius: 25,
@@ -172,5 +202,23 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     paddingHorizontal: 5,
     borderRadius: 10,
+  },
+  input: {
+    borderRadius: 12,
+    marginHorizontal: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    fontSize: 18,
+    borderWidth: 2,
+    fontWeight: '500',
+  },
+  noBlog: {
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  inputView: {
+    marginBottom: 10,
   },
 });

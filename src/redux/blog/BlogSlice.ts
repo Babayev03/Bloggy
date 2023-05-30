@@ -93,7 +93,7 @@ export const blogSlice = createSlice({
       state.loading = 'pending';
     });
     builder.addCase(addBlog.fulfilled, (state, action) => {
-      state.datas = action.payload;
+      state.datas.push(action.payload);
       state.loading = 'fulfilled';
     });
     builder.addCase(addBlog.rejected, (state, action) => {
