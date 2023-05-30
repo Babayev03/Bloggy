@@ -33,8 +33,10 @@ const SettingScreen = () => {
   return (
     <View style={[containerStyle]}>
       {themeMode === 'dark' ? <SvgDarkIcon /> : <SvgLightIcon />}
-      <TouchableOpacity style={[styles.button, buttonBackColor]} onPress={()=> handleToggleTheme()}>
-        <Text style={[styles.buttonText, buttonTextColor]}>Add</Text>
+      <TouchableOpacity
+        style={[styles.button, buttonBackColor]}
+        onPress={() => handleToggleTheme()}>
+        <Text style={[styles.buttonText, buttonTextColor]}>Change Theme</Text>
       </TouchableOpacity>
     </View>
   );
