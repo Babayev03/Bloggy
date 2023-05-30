@@ -23,17 +23,14 @@ const WIDTH = Dimensions.get('window').width;
 const MainScreen = ({navigation}: any) => {
   const dispatch = useDispatch<AppDispatch>();
 
-const getBlog = () => {
-
-  dispatch(getAllblog());
-};
-
+  const getBlog = () => {
+    dispatch(getAllblog());
+  };
 
   useEffect(() => {
     getBlog();
   }, []);
   const data = useSelector((state: RootState) => state.blog);
-  console.log(data);
 
   const themeMode = useSelector<RootState, any>(state => state.theme.themeMode);
 
