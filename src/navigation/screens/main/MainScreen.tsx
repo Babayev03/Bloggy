@@ -16,22 +16,24 @@ import {useCallback} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
 import SvgDelete from '../../../assets/images/Delete';
 import moment from 'moment';
+import {useEffect} from 'react';
 
 const WIDTH = Dimensions.get('window').width;
 
 const MainScreen = ({navigation}: any) => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const getAllBlog = useCallback(() => {
-    dispatch(getAllblog());
-  }, []);
+const getBlog = () => {
 
-  useFocusEffect(
-    useCallback(() => {
-      getAllBlog();
-    }, [getAllBlog]),
-  );
+  dispatch(getAllblog());
+};
+
+
+  useEffect(() => {
+    getBlog();
+  }, []);
   const data = useSelector((state: RootState) => state.blog);
+  console.log(data);
 
   const themeMode = useSelector<RootState, any>(state => state.theme.themeMode);
 
@@ -99,8 +101,8 @@ const MainScreen = ({navigation}: any) => {
       <View style={styles.card}>
         <FlatList
           refreshing={false}
-          onRefresh={getAllBlog}
-          data={data.data}
+          onRefresh={getBlog}
+          data={data.datas}
           renderItem={renderItem}
           keyExtractor={(item: any) => item.id}
           showsVerticalScrollIndicator={false}

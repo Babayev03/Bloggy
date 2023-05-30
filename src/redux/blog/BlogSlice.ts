@@ -3,15 +3,17 @@ import axios from 'axios';
 import {createAsyncThunk} from '@reduxjs/toolkit';
 
 interface BlogState {
-  data: any[];
+  datas: any[];
   loading: string;
   error: string;
+  data: any[];
 }
 
 const initialState: BlogState = {
-  data: [],
+  datas: [],
   loading: 'pending' || 'fulfilled' || 'rejected',
   error: '',
+  data: [],
 };
 
 export const getAllblog = createAsyncThunk('blog/getAllblog', async () => {
@@ -24,8 +26,6 @@ export const getAllblog = createAsyncThunk('blog/getAllblog', async () => {
 export const getBlogById = createAsyncThunk(
   'blog/getBlogById',
   async (id: string) => {
-    console.log('id', id);
-
     const response = await axios.get(
       `https://64731455d784bccb4a3c3e14.mockapi.io/blogs/${id}`,
     );
@@ -71,7 +71,7 @@ export const blogSlice = createSlice({
       state.loading = 'pending';
     });
     builder.addCase(getAllblog.fulfilled, (state, action) => {
-      state.data = action.payload;
+      state.datas = action.payload;
       state.loading = 'fulfilled';
     });
     builder.addCase(getAllblog.rejected, (state, action) => {
@@ -93,7 +93,7 @@ export const blogSlice = createSlice({
       state.loading = 'pending';
     });
     builder.addCase(addBlog.fulfilled, (state, action) => {
-      state.data = action.payload;
+      state.datas = action.payload;
       state.loading = 'fulfilled';
     });
     builder.addCase(addBlog.rejected, (state, action) => {
@@ -105,6 +105,9 @@ export const blogSlice = createSlice({
     });
     builder.addCase(updateBlog.fulfilled, (state, action) => {
       state.data = action.payload;
+      state.datas = state.datas.map((item: any) =>
+        item.id === action.payload.id ? action.payload : item,
+      );
       state.loading = 'fulfilled';
     });
     builder.addCase(updateBlog.rejected, (state, action) => {
@@ -113,7 +116,7 @@ export const blogSlice = createSlice({
     });
     builder.addCase(deleteBlog.pending, (state, action) => {});
     builder.addCase(deleteBlog.fulfilled, (state, action) => {
-      state.data = state.data.filter(
+      state.datas = state.datas.filter(
         (item: any) => item.id !== action.payload.id,
       );
       state.loading = 'fulfilled';
