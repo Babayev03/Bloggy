@@ -1,3 +1,4 @@
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -6,20 +7,24 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {AppDispatch, RootState} from '../../../redux';
+import {addSave, removeSave} from '../../../redux/save/SaveSlice';
 import {getBlogById} from '../../../redux/blog/BlogSlice';
 import SvgArrow from '../../../assets/images/Arrow';
 import SvgHeartIcon from '../../../assets/images/SaveIcon';
-import {addSave, removeSave} from '../../../redux/save/SaveSlice';
+import {AppDispatch, RootState} from '../../../redux';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 const DetailScreen = ({route, navigation}: any) => {
   const [isSaved, setIsSaved] = useState(false);
   const {id} = route.params;
 
-  const themeMode = useSelector<RootState, any>(state => state.theme.themeMode);
-  const save = useSelector<RootState, any>(state => state.save.save);
+  const themeMode = useSelector<RootState, any>(
+    (state: RootState) => state.theme.themeMode,
+  );
+  const save = useSelector<RootState, any>(
+    (state: RootState) => state.save.save,
+  );
   const savedItemIds = save.map((item: any) => item.id);
 
   const containerStyle = {
@@ -31,11 +36,11 @@ const DetailScreen = ({route, navigation}: any) => {
 
   useEffect(() => {
     dispatch(getBlogById(id));
-  }, []);
+  }, [dispatch, id]);
 
   useEffect(() => {
     setIsSaved(savedItemIds.includes(id));
-  }, [savedItemIds]);
+  }, [savedItemIds, id]);
 
   const handleSave = (item: any) => {
     if (isSaved) {
@@ -45,7 +50,7 @@ const DetailScreen = ({route, navigation}: any) => {
     }
   };
 
-  const data = useSelector<RootState, any>(state => state.blog);
+  const data = useSelector<RootState, any>((state: RootState) => state.blog);
 
   const titleText: any = {
     color: themeMode === 'dark' ? '#fff' : '#000',
@@ -61,41 +66,40 @@ const DetailScreen = ({route, navigation}: any) => {
 
   return (
     <ScrollView style={containerStyle} showsVerticalScrollIndicator={false}>
-      {data.loading === 'pending' ? null : (
-        <>
-          <View style={styles.header}>
+      <GestureHandlerRootView>
+        {data.loading === 'pending' ? null : (
+          <>
+            <View style={styles.header}>
+              <TouchableOpacity
+                style={styles.arrow}
+                onPress={() => navigation.goBack()}>
+                <SvgArrow stroke={themeMode === 'dark' ? '#fff' : '#000'} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.arrow}
+                onPress={() => handleSave(data.data)}>
+                <SvgHeartIcon stroke={'red'} fill={isSaved ? 'red' : 'none'} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.imageContainer}>
+              {data.data.avatar ? (
+                <Image source={{uri: data.data.avatar}} style={styles.image} />
+              ) : null}
+            </View>
+            <View style={styles.titleContainer}>
+              <Text style={[styles.title, titleText]}>{data.data.title}</Text>
+            </View>
+            <View style={styles.descriptionContainer}>
+              <Text style={styles.description}>{data.data.description}</Text>
+            </View>
             <TouchableOpacity
-              style={styles.arrow}
-              onPress={() => navigation.goBack()}>
-              <SvgArrow stroke={themeMode === 'dark' ? '#fff' : '#000'} />
+              onPress={() => navigation.navigate('Edit', {item: data.data})}
+              style={[styles.editButton, buttonBackColor]}>
+              <Text style={[styles.editText, buttonTextColor]}>Edit</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.arrow}
-              onPress={() => handleSave(data.data)}>
-              <SvgHeartIcon
-                stroke={'red'}
-                fill={isSaved ? 'red' : 'none'}
-              />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.imageContainer}>
-            {data.data.avatar ? (
-              <Image source={{uri: data.data.avatar}} style={styles.image} />
-            ) : null}
-          </View>
-          <View style={styles.titleContainer}>
-            <Text style={[styles.title, titleText]}>{data.data.title}</Text>
-          </View>
-          <View style={styles.descriptionContainer}>
-            <Text style={styles.description}>{data.data.description}</Text>
-          </View>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Edit', {item: data.data})}
-            style={[styles.editButton, buttonBackColor]}>
-            <Text style={[styles.editText, buttonTextColor]}>Edit</Text>
-          </TouchableOpacity>
-        </>
-      )}
+          </>
+        )}
+      </GestureHandlerRootView>
     </ScrollView>
   );
 };

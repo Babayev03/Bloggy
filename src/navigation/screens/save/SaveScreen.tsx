@@ -1,18 +1,18 @@
-import {View, Text, StyleSheet} from 'react-native';
 import React from 'react';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../../redux';
-import {FlatList, GestureHandlerRootView} from 'react-native-gesture-handler';
-import {TouchableOpacity} from 'react-native';
-import {Image} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../../../redux';
+import { FlatList } from 'react-native-gesture-handler';
 import moment from 'moment';
 import SvgDelete from '../../../assets/images/Delete';
-import {Dimensions} from 'react-native';
+import { removeSave } from '../../../redux/save/SaveSlice';
+import { Dimensions } from 'react-native';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 const WIDTH = Dimensions.get('window').width;
 
-const SaveScreen = ({navigation}: any) => {
-  const themeMode = useSelector((state: any) => state.theme.themeMode);
+const SaveScreen = ({ navigation }: any) => {
+  const themeMode = useSelector((state: RootState) => state.theme.themeMode);
 
   const containerStyle: any = {
     flex: 1,
@@ -23,7 +23,7 @@ const SaveScreen = ({navigation}: any) => {
     color: themeMode === 'dark' ? '#fff' : '#000',
   };
 
-  const save = useSelector<RootState, any>(state => state.save.save);
+  const save = useSelector((state: RootState) => state.save.save);
 
   const noBlogText: any = {
     color: themeMode === 'dark' ? '#fff' : '#000',
@@ -39,25 +39,28 @@ const SaveScreen = ({navigation}: any) => {
     color: themeMode === 'dark' ? '#fff' : '#000',
   };
 
-  const renderItem = ({item}: any) => {
+  const dispatch = useDispatch();
+
+  const handleDelete = (item: any) => {
+    dispatch(removeSave(item));
+  };
+
+  const renderItem = ({ item }: any) => {
     return (
       <TouchableOpacity
-        onPress={() => navigation.navigate('Detail', {id: item.id})}
-        style={styles.cardItem}>
+        onPress={() => navigation.navigate('Detail', { id: item.id })}
+        style={styles.cardItem}
+      >
         <View style={styles.image}>
-          <Image source={{uri: item.avatar}} style={styles.image} />
+          <Image source={{ uri: item.avatar }} style={styles.image} />
           <View style={styles.dateImage}>
-            <Text style={{color: '#000', fontWeight: '500'}}>
-              {formatDate(item.createdAt)}
-            </Text>
+            <Text style={{ color: '#000', fontWeight: '500' }}>{formatDate(item.createdAt)}</Text>
           </View>
         </View>
         <View style={styles.cardText}>
-          <Text style={[styles.cardItemText, cardItemTextColor]}>
-            {item.title}
-          </Text>
+          <Text style={[styles.cardItemText, cardItemTextColor]}>{item.title}</Text>
         </View>
-        <TouchableOpacity style={styles.delete}>
+        <TouchableOpacity style={styles.delete} onPress={() => handleDelete(item)}>
           <SvgDelete />
         </TouchableOpacity>
       </TouchableOpacity>
@@ -69,14 +72,17 @@ const SaveScreen = ({navigation}: any) => {
       {save.length > 0 ? (
         <>
           <Text style={[styles.headerText, textStyle]}>Saved Blogs</Text>
-          <FlatList
-            data={save}
-            renderItem={renderItem}
-            keyExtractor={item => item.id}
-          />
+          <View style={styles.scroll}>
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              data={save}
+              renderItem={renderItem}
+              keyExtractor={item => item.id}
+            />
+          </View>
         </>
       ) : (
-        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <View style={styles.noBlogContainer}>
           <Text style={noBlogText}>No Saved Blogs</Text>
         </View>
       )}
@@ -130,6 +136,15 @@ const styles = StyleSheet.create({
     width: 40,
     alignItems: 'center',
     height: 40,
+    justifyContent: 'center',
+  },
+  scroll: {
+    marginTop: 20,
+    flex: 1,
+  },
+  noBlogContainer: {
+    flex: 1,
+    alignItems: 'center',
     justifyContent: 'center',
   },
 });
