@@ -12,8 +12,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {deleteBlog, getAllblog} from '../../../redux/blog/BlogSlice';
 import {AppDispatch, RootState} from '../../../redux';
 import {Dimensions} from 'react-native';
-import {useCallback} from 'react';
-import {useFocusEffect} from '@react-navigation/native';
 import SvgDelete from '../../../assets/images/Delete';
 import moment from 'moment';
 import {useEffect} from 'react';
