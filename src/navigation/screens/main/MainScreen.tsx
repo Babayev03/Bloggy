@@ -16,6 +16,7 @@ import {Dimensions} from 'react-native';
 import SvgDelete from '../../../assets/images/Delete';
 import moment from 'moment';
 import {useEffect} from 'react';
+import {getTheme} from '../../../redux/theme/ThemeSlice';
 
 const WIDTH = Dimensions.get('window').width;
 
@@ -29,7 +30,7 @@ const MainScreen = ({navigation}: any) => {
 
   useEffect(() => {
     getBlog();
-    console.log('MainScreen');
+    dispatch(getTheme());
   }, []);
   const data = useSelector((state: RootState) => state.blog);
 

@@ -6,17 +6,21 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../../../redux';
-import {useEffect} from 'react';
 import {getBlogById} from '../../../redux/blog/BlogSlice';
 import SvgArrow from '../../../assets/images/Arrow';
+import SvgHeartIcon from '../../../assets/images/SaveIcon';
+import {addSave, removeSave} from '../../../redux/save/SaveSlice';
 
 const DetailScreen = ({route, navigation}: any) => {
+  const [isSaved, setIsSaved] = useState(false);
   const {id} = route.params;
 
   const themeMode = useSelector<RootState, any>(state => state.theme.themeMode);
+  const save = useSelector<RootState, any>(state => state.save.save);
+  const savedItemIds = save.map((item: any) => item.id);
 
   const containerStyle = {
     flex: 1,
@@ -28,6 +32,18 @@ const DetailScreen = ({route, navigation}: any) => {
   useEffect(() => {
     dispatch(getBlogById(id));
   }, []);
+
+  useEffect(() => {
+    setIsSaved(savedItemIds.includes(id));
+  }, [savedItemIds]);
+
+  const handleSave = (item: any) => {
+    if (isSaved) {
+      dispatch(removeSave(item));
+    } else {
+      dispatch(addSave(item));
+    }
+  };
 
   const data = useSelector<RootState, any>(state => state.blog);
 
@@ -47,11 +63,21 @@ const DetailScreen = ({route, navigation}: any) => {
     <ScrollView style={containerStyle} showsVerticalScrollIndicator={false}>
       {data.loading === 'pending' ? null : (
         <>
-          <TouchableOpacity
-            style={styles.arrow}
-            onPress={() => navigation.goBack()}>
-            <SvgArrow stroke={themeMode === 'dark' ? '#fff' : '#000'} />
-          </TouchableOpacity>
+          <View style={styles.header}>
+            <TouchableOpacity
+              style={styles.arrow}
+              onPress={() => navigation.goBack()}>
+              <SvgArrow stroke={themeMode === 'dark' ? '#fff' : '#000'} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.arrow}
+              onPress={() => handleSave(data.data)}>
+              <SvgHeartIcon
+                stroke={'red'}
+                fill={isSaved ? 'red' : 'none'}
+              />
+            </TouchableOpacity>
+          </View>
           <View style={styles.imageContainer}>
             {data.data.avatar ? (
               <Image source={{uri: data.data.avatar}} style={styles.image} />
@@ -79,7 +105,7 @@ export default DetailScreen;
 const styles = StyleSheet.create({
   arrow: {
     marginVertical: 15,
-    marginLeft: 20,
+    marginHorizontal: 20,
   },
   imageContainer: {
     alignItems: 'center',
@@ -117,5 +143,9 @@ const styles = StyleSheet.create({
   editText: {
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });

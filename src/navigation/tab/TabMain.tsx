@@ -7,6 +7,8 @@ import SvgSetting from '../../assets/images/Setting';
 import SvgHomeIcon from '../../assets/images/Home';
 import SvgAddIcon from '../../assets/images/AddIcon';
 import {useSelector} from 'react-redux';
+import SaveStack from '../stacks/save/SaveStack';
+import SvgHeartIcon from '../../assets/images/SaveIcon';
 
 const Tab = createBottomTabNavigator();
 
@@ -48,6 +50,20 @@ const TabMain = () => {
             <SvgAddIcon
               stroke={focused ? '#E0783E' : '#494949'}
               fill={focused ? '#E0783E' : '#494949'}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="SaveStack"
+        component={SaveStack}
+        options={{
+          headerShown: false,
+          tabBarShowLabel: false,
+          tabBarIcon: ({focused}: any) => (
+            <SvgHeartIcon
+              stroke={focused ? '#E0783E' : '#494949'}
+              fill={'none'}
             />
           ),
         }}
