@@ -3,7 +3,7 @@ import React from 'react';
 import SvgGoogle from '../../../assets/images/GoogleIcon';
 import {ThemedButton} from 'react-native-really-awesome-button';
 
-const FirstLogin = () => {
+const StartScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.imageView}>
@@ -38,7 +38,7 @@ const FirstLogin = () => {
   );
 };
 
-export default FirstLogin;
+export default StartScreen;
 
 const styles = StyleSheet.create({
   container: {
