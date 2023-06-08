@@ -2,8 +2,12 @@ import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import React from 'react';
 import SvgGoogle from '../../../assets/images/GoogleIcon';
 import {ThemedButton} from 'react-native-really-awesome-button';
+import {useNavigation} from '@react-navigation/native';
 
-const StartScreen = () => {
+const RegisterScreen = () => {
+  const handleProgress = (release: any) => setTimeout(release, 1000);
+  const navigation = useNavigation<any>();
+
   return (
     <View style={styles.container}>
       <View style={styles.imageView}>
@@ -18,27 +22,41 @@ const StartScreen = () => {
           style={styles.image}
         />
       </View>
-      <TouchableOpacity style={styles.button}>
-        <SvgGoogle />
-        <Text style={styles.ButtonText}>Connect With Google</Text>
-      </TouchableOpacity>
+      <View style={{alignSelf: 'center'}}>
+        <ThemedButton
+          name="bruce"
+          type="secondary"
+          onPress={handleProgress}
+          size="large">
+          <SvgGoogle />
+          <Text style={styles.ButtonText}> Connect With Google</Text>
+        </ThemedButton>
+      </View>
       <View style={styles.slicer}>
         <Text style={styles.slicerText}>or</Text>
       </View>
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.ButtonText}>Log In With Your Email</Text>
-      </TouchableOpacity>
+      <View style={{alignSelf: 'center'}}>
+        <ThemedButton
+          name="bruce"
+          type="secondary"
+          onPress={handleProgress}
+          size="large">
+          <Text style={styles.ButtonText}>Log In With Your Email</Text>
+        </ThemedButton>
+      </View>
       <View style={styles.singUp}>
         <Text style={styles.signUpText}>Dont have an account?</Text>
-        <TouchableOpacity style={styles.signNext}>
-          <Text style={{color:"green"}}>Sign Up</Text>
+        <TouchableOpacity
+          style={styles.signNext}
+          onPress={() => navigation.navigate('SignUp')}>
+          <Text style={styles.goSingnUp}>Sign Up</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 };
 
-export default StartScreen;
+export default RegisterScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -83,7 +101,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   ButtonText: {
-    fontSize: 20,
+    fontSize: 18,
     fontFamily: 'Raleway-Medium',
     color: '#000',
     paddingVertical: 10,
@@ -105,18 +123,22 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   signUpText: {
-    fontSize: 20,
+    fontSize: 18,
     fontFamily: 'Raleway-Medium',
     color: '#fff',
     opacity: 0.6,
   },
-  signNext:{
+  signNext: {
     fontSize: 20,
     fontFamily: 'Raleway-Medium',
     color: '#fff',
     marginLeft: 5,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop:5
-  }
+  },
+  goSingnUp: {
+    color: 'green',
+    fontSize: 18,
+    fontFamily: 'Raleway-Bold',
+  },
 });

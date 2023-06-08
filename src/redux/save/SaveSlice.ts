@@ -1,5 +1,6 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {ExclusiveGesture} from 'react-native-gesture-handler/lib/typescript/handlers/gestures/gestureComposition';
 
 interface SaveState {
   save: any[];
@@ -11,7 +12,7 @@ const initialState: SaveState = {
 
 export const getSaves = createAsyncThunk('save/getSaves', async () => {
   try {
-    const response = await AsyncStorage.getItem('save');
+    const response = await AsyncStorage.getItem('savedBlogs');
     if (response) {
       return response;
     }
@@ -26,12 +27,18 @@ export const setSaves = createAsyncThunk(
   'save/setSaves',
   async (save: any[]) => {
     try {
-      const existingSaves = await AsyncStorage.getItem('save');
+      const existingSaves = await AsyncStorage.getItem('savedBlogs');
       const existingSaveArray = existingSaves ? JSON.parse(existingSaves) : [];
+      if (existingSaveArray.includes(save[0])) {
+        const updatedSaves = existingSaveArray.filter(
+          (item: any) => item.id !== save[0].id,
+        );
+        await AsyncStorage.setItem('savedBlogs', JSON.stringify(updatedSaves));
+        return updatedSaves;
+      }
+      const updatedSaves = [...existingSaveArray, save];
 
-      const updatedSaves = [...existingSaveArray, ...save];
-
-      await AsyncStorage.setItem('save', JSON.stringify(updatedSaves));
+      await AsyncStorage.setItem('savedBlogs', JSON.stringify(updatedSaves));
 
       return updatedSaves;
     } catch (error) {
@@ -55,13 +62,13 @@ export const saveSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(getSaves.pending, state => {})
-      .addCase(getSaves.fulfilled, (state:any, action) => {
-        state.save = action.payload;
+      .addCase(getSaves.fulfilled, (state, action) => {
+        state.save.push(action.payload);
       })
       .addCase(getSaves.rejected, state => {})
       .addCase(setSaves.pending, state => {})
       .addCase(setSaves.fulfilled, (state, action) => {
-        state.save = action.payload;
+        state.save.push(action.payload);
       })
       .addCase(setSaves.rejected, state => {});
   },
