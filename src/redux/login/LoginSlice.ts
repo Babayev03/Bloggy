@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 
 interface LoginState {
-  loggedIn: boolean|null|string;
+  loggedIn: boolean | null | string;
 }
 
 const initialState: LoginState = {
@@ -25,6 +25,9 @@ export const setLoggedIn = createAsyncThunk(
 export const getLoggedIn = createAsyncThunk('login/getLoggedIn', async () => {
   try {
     const loggedIn = await AsyncStorage.getItem('loggedIn');
+    if (loggedIn === null) {
+      return false;
+    }
     return loggedIn;
   } catch (error) {
     console.log(error);
@@ -37,8 +40,8 @@ const loginSlice = createSlice({
   initialState,
   reducers: {
     toggleLogin: state => {
-        state.loggedIn = !state.loggedIn;
-        }
+      state.loggedIn = !state.loggedIn;
+    },
   },
   extraReducers: builder => {
     builder.addCase(getLoggedIn.fulfilled, (state, action) => {
