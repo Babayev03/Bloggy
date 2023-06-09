@@ -9,6 +9,7 @@ import SvgAddIcon from '../../assets/images/AddIcon';
 import {useSelector} from 'react-redux';
 import SaveStack from '../stacks/save/SaveStack';
 import SvgHeartIcon from '../../assets/images/SaveIcon';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Tab = createBottomTabNavigator();
 

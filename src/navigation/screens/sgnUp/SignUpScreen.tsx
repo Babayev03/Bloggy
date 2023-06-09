@@ -4,16 +4,21 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
+  ScrollView,
+  Alert,
 } from 'react-native';
 import React, {useState} from 'react';
 import SvgArrow from '../../../assets/images/Arrow';
 import {useNavigation} from '@react-navigation/native';
 import SvgProfile from '../../../assets/images/ProfileIcon';
 import SvgLock from '../../../assets/images/LockIcon';
-import {ThemedButton} from 'react-native-really-awesome-button';
 import SvgOpenEye from '../../../assets/images/OpenEye';
 import SvgCloseEye from '../../../assets/images/CloseEye';
-import SvgLine from '../../../assets/images/LineIcon';
+import {KeyboardAvoidingView} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
+import {AppDispatch, RootState} from '../../../redux';
+import {useEffect} from 'react';
+import {getLoggedIn, setLoggedIn} from '../../../redux/login/LoginSlice';
 
 const SignUpScreen = () => {
   const navigation = useNavigation<any>();
@@ -22,14 +27,42 @@ const SignUpScreen = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [secureTextEntry, setSecureTextEntry] = useState<boolean>(true);
 
-  const handleProgress = (release: any) => setTimeout(release, 1000);
+  const result = useSelector<RootState, any>((state: any) => state.login);
+  const dispatch = useDispatch<AppDispatch>();
+
+  console.log(result);
+  useEffect(() => {
+    dispatch(getLoggedIn());
+  }, []);
 
   const handleSecure = () => {
     setSecureTextEntry(!secureTextEntry);
   };
 
+  const handleSignUp = () => {
+    if (email === '' || password === '' || confirmPassword === '') {
+      Alert.alert('Empty Inputs', 'Please Fill Inputs Then Press Add Again', [
+        {text: 'OK'},
+      ]);
+      return;
+    } else if (password !== confirmPassword) {
+      Alert.alert('Invalid Inputs', 'Passwords Do Not Match', [{text: 'OK'}]);
+      return;
+    } else if (password.length < 8 || confirmPassword.length < 8) {
+      Alert.alert('Invalid Inputs', 'Password Must Be At Least 8 Characters', [
+        {text: 'OK'},
+      ]);
+      return;
+    } else {
+      dispatch(setLoggedIn(true));
+    }
+  };
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
+      <KeyboardAvoidingView
+        behavior="position"
+        style={{backgroundColor: 'white', flex: 1}}></KeyboardAvoidingView>
       <TouchableOpacity
         style={styles.goBack}
         onPress={() => navigation.goBack()}>
@@ -44,6 +77,7 @@ const SignUpScreen = () => {
           placeholder="Your Email"
           placeholderTextColor="rgba(0, 0, 0, 0.5)"
           onChangeText={text => setEmail(text)}
+          value={email}
         />
         <View style={{position: 'absolute', left: 8, top: '35%'}}>
           <SvgProfile />
@@ -55,6 +89,8 @@ const SignUpScreen = () => {
           placeholder="Your Password"
           placeholderTextColor="rgba(0, 0, 0, 0.5)"
           onChangeText={text => setPassword(text)}
+          secureTextEntry={secureTextEntry}
+          value={password}
         />
         <View style={{position: 'absolute', left: 8, top: '35%'}}>
           <SvgLock />
@@ -71,26 +107,25 @@ const SignUpScreen = () => {
           placeholder="Confirm Password"
           placeholderTextColor="rgba(0, 0, 0, 0.5)"
           onChangeText={text => setConfirmPassword(text)}
-          secureTextEntry={secureTextEntry ? true : false}
+          secureTextEntry={secureTextEntry}
+          value={confirmPassword}
         />
         <View style={{position: 'absolute', left: 8, top: '35%'}}>
           <SvgLock />
         </View>
       </View>
-      <View style={{alignSelf: 'center', marginTop: 25}}>
-        <ThemedButton
-          progress
-          name="bruce"
-          type="secondary"
-          onPress={handleProgress}
-          size="medium">
+      <View style={{marginTop: 50}}>
+        <TouchableOpacity style={styles.button} onPress={() => handleSignUp()}>
           <Text style={styles.buttonText}>Sign Up</Text>
-        </ThemedButton>
+        </TouchableOpacity>
       </View>
-      <View>
-        <SvgLine />
+      <View style={styles.terms}>
+        <Text style={styles.termsText}>
+          By creating an account or signing you agree to our Terms and
+          Conditions
+        </Text>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -134,7 +169,27 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 18,
     fontFamily: 'Raleway-Medium',
-    color: '#000',
+    color: '#fff',
     paddingVertical: 10,
+    textAlign: 'center',
+  },
+  button: {
+    backgroundColor: '#000',
+    borderRadius: 8,
+    paddingHorizontal: 30,
+    paddingVertical: 8,
+    marginHorizontal: 25,
+  },
+  terms: {
+    marginHorizontal: 25,
+    flex: 1,
+    marginTop: 80,
+  },
+  termsText: {
+    color: '#000',
+    fontSize: 14,
+    fontFamily: 'Raleway-Medium',
+    textAlign: 'center',
+    opacity: 0.5,
   },
 });
