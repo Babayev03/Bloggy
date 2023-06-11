@@ -19,7 +19,7 @@ const StartStack = () => {
   if (result.loggedIn) {
     return <TabMain />;
   } else {
-    return <RegisterStack />;
+      return <RegisterStack />;
   }
 };
 export default StartStack;

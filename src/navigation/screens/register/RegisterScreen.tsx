@@ -27,10 +27,11 @@ const RegisterScreen = () => {
       </View>
       <View style={styles.under}>
         <Text style={styles.underText}>
-          Here you can easily see what people are sharing{' '}
+          Here you can easily see what people are sharing and what is trending
         </Text>
       </View>
       <TouchableOpacity
+      onPress={() => navigation.navigate('Login')}
         style={[styles.button, {marginTop: 50, backgroundColor: '#000'}]}>
         <Text style={[styles.buttonText, {color: '#fff'}]}>Sign In</Text>
       </TouchableOpacity>

@@ -3,6 +3,8 @@ import React from 'react';
 import SignUpScreen from '../../screens/sgnUp/SignUpScreen';
 import RegisterScreen from '../../screens/register/RegisterScreen';
 import CreateAccountScreen from '../../screens/create/CreateAccountScreen';
+import LoginScreen from '../../screens/login/LoginScreen';
+import ModelScreen from '../../screens/model/ModelScreen';
 
 const RegisterStack = () => {
   const Stack = createNativeStackNavigator();
@@ -30,6 +32,22 @@ const RegisterStack = () => {
           headerShown: false,
           animationTypeForReplace: 'push',
           animation: 'slide_from_right',
+        }}
+      />
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{
+          headerShown: false,
+          animationTypeForReplace: 'push',
+          animation: 'slide_from_right',
+        }}
+      />
+      <Stack.Screen
+        name="Model"
+        component={ModelScreen}
+        options={{
+          headerShown: false,
         }}
       />
     </Stack.Navigator>
