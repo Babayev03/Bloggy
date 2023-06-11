@@ -14,7 +14,6 @@ import SvgProfile from '../../../assets/images/ProfileIcon';
 import SvgLock from '../../../assets/images/LockIcon';
 import SvgOpenEye from '../../../assets/images/OpenEye';
 import SvgCloseEye from '../../../assets/images/CloseEye';
-import {KeyboardAvoidingView} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../../../redux';
 import {useEffect} from 'react';
@@ -30,7 +29,6 @@ const LoginScreen = () => {
   const [error, setError] = useState<string>('');
   const [secureTextEntry, setSecureTextEntry] = useState<boolean>(true);
 
-  const result = useSelector<RootState, any>((state: any) => state.login);
   const dispatch = useDispatch<AppDispatch>();
 
   const {
@@ -60,17 +58,17 @@ const LoginScreen = () => {
         password: data.password,
       })
       .then(res => {
-        console.log(res.data);
-        if (res.data.sucess) {
-          console.log('success');
+        if (res.data.success) {
+          dispatch(setLoggedIn({loggedIn: 'true', token: res.data.token}));
+          reset();
+          setError('');
         } else {
-          setError(res.data.message);
+          setError(res.data.errors.msg);
         }
       })
       .catch(err => {
         console.log(err);
       });
-    reset();
   });
 
   return (

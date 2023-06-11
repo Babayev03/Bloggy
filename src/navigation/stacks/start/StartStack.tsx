@@ -10,13 +10,15 @@ import RegisterStack from '../register/RegisterStack';
 const StartStack = () => {
   const result = useSelector<RootState, any>((state: any) => state.login);
   const dispatch = useDispatch<AppDispatch>();
+  console.log('result', result);
+  
 
   console.log(result);
   useEffect(() => {
     dispatch(getLoggedIn());
   }, []);
 
-  if (result.loggedIn) {
+  if (result.loggedIn == 'true') {
     return <TabMain />;
   } else {
       return <RegisterStack />;

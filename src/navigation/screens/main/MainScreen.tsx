@@ -7,6 +7,8 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   TextInput,
+  ScrollView,
+  Button,
 } from 'react-native';
 import React, {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
@@ -17,7 +19,7 @@ import SvgDelete from '../../../assets/images/Delete';
 import moment from 'moment';
 import {useEffect} from 'react';
 import {getTheme} from '../../../redux/theme/ThemeSlice';
-
+import {ListItem} from '@rneui/themed';
 const WIDTH = Dimensions.get('window').width;
 
 const MainScreen = ({navigation}: any) => {
@@ -73,28 +75,19 @@ const MainScreen = ({navigation}: any) => {
 
   const renderItem = ({item}: any) => {
     return (
-      <TouchableOpacity
-        onPress={() => navigation.navigate('Detail', {id: item.id})}
-        style={styles.cardItem}>
-        <View style={styles.image}>
-          <Image source={{uri: item.avatar}} style={styles.image} />
-          <View style={styles.dateImage}>
-            <Text style={{color: '#000', fontWeight: '500'}}>
-              {formatDate(item.createdAt)}
-            </Text>
-          </View>
-        </View>
-        <View style={styles.cardText}>
-          <Text style={[styles.cardItemText, cardItemTextColor]}>
-            {item.title}
-          </Text>
-        </View>
-        <TouchableOpacity
-          style={styles.delete}
-          onPress={() => handleRemove(item.id)}>
-          <SvgDelete />
-        </TouchableOpacity>
-      </TouchableOpacity>
+      // <TouchableOpacity
+      //   onPress={() => navigation.navigate('Detail', {id: item.id})}>
+        <ListItem.Swipeable
+          leftContent={reset => <Button title="Info" onPress={() => reset()} />}
+          rightContent={reset => (
+            <Button title="Delete" onPress={() => reset()} />
+          )}>
+          <ListItem.Content>
+            <ListItem.Title>{item.title}</ListItem.Title>
+          </ListItem.Content>
+          <ListItem.Chevron />
+        </ListItem.Swipeable>
+      // </TouchableOpacity>
     );
   };
 

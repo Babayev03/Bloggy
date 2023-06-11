@@ -62,6 +62,7 @@ const SignUpScreen = () => {
           }
           console.log('sucess');
           setError('');
+          navigation.navigate('Model');
 
           // reset();
         })
