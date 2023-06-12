@@ -46,7 +46,7 @@ const SignUpScreen = () => {
       setError('Passwords do not match');
     } else {
       axios
-        .post('http://192.168.0.112:3000/api/register', {
+        .post('http://172.16.0.185:3000/api/register', {
           email: data.email,
           password: data.password,
         })

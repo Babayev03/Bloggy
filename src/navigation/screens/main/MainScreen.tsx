@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,22 +8,20 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   TextInput,
-  ScrollView,
-  Button,
+  Dimensions,
+  Pressable,
 } from 'react-native';
-import React, {useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {deleteBlog, getAllblog} from '../../../redux/blog/BlogSlice';
-import {AppDispatch, RootState} from '../../../redux';
-import {Dimensions} from 'react-native';
-import SvgDelete from '../../../assets/images/Delete';
+import { useDispatch, useSelector } from 'react-redux';
+import { SwipeListView } from 'react-native-swipe-list-view';
 import moment from 'moment';
-import {useEffect} from 'react';
-import {getTheme} from '../../../redux/theme/ThemeSlice';
-import {ListItem} from '@rneui/themed';
+import { getAllblog, deleteBlog } from '../../../redux/blog/BlogSlice';
+import { getTheme } from '../../../redux/theme/ThemeSlice';
+import { RootState, AppDispatch } from '../../../redux';
+import SvgDelete from '../../../assets/images/Delete';
+
 const WIDTH = Dimensions.get('window').width;
 
-const MainScreen = ({navigation}: any) => {
+const MainScreen = ({ navigation }: any) => {
   const [searchQuery, setSearchQuery] = useState('');
   const dispatch = useDispatch<AppDispatch>();
 
@@ -34,9 +33,9 @@ const MainScreen = ({navigation}: any) => {
     getBlog();
     dispatch(getTheme());
   }, []);
-  const data = useSelector((state: RootState) => state.blog);
 
-  const themeMode = useSelector<RootState, any>(state => state.theme.themeMode);
+  const data = useSelector((state: RootState) => state.blog);
+  const themeMode = useSelector<RootState>((state) => state.theme.themeMode);
 
   const containerStyle: any = {
     flex: 1,
@@ -65,29 +64,42 @@ const MainScreen = ({navigation}: any) => {
     borderColor: themeMode === 'dark' ? '#fff' : '#000',
   };
 
-  const filteredData = data.datas.filter(item =>
-    item.title.toLowerCase().includes(searchQuery.toLowerCase()),
+  const filteredData = data.datas.filter((item) =>
+    item.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const noBlogTextColor: any = {
     color: themeMode === 'dark' ? '#fff' : '#000',
   };
 
-  const renderItem = ({item}: any) => {
+  const renderItem = ({ item }: any, rowMap: any) => {
     return (
-      // <TouchableOpacity
-      //   onPress={() => navigation.navigate('Detail', {id: item.id})}>
-        <ListItem.Swipeable
-          leftContent={reset => <Button title="Info" onPress={() => reset()} />}
-          rightContent={reset => (
-            <Button title="Delete" onPress={() => reset()} />
-          )}>
-          <ListItem.Content>
-            <ListItem.Title>{item.title}</ListItem.Title>
-          </ListItem.Content>
-          <ListItem.Chevron />
-        </ListItem.Swipeable>
-      // </TouchableOpacity>
+      <Pressable style={[styles.cardItem, {backgroundColor: themeMode === 'dark' ? '#000' : '#fff'}]}
+      onPress={() =>navigation.navigate('Detail', {id: item.id})}
+      >
+        <Image source={{ uri: item.avatar }} style={styles.image} />
+        <View style={styles.cardText}>
+          <Text style={[styles.cardItemText, cardItemTextColor]}>
+            {item.title}
+          </Text>
+          <Text style={styles.date}>
+            {formatDate(item.createdAt)}
+          </Text>
+        </View>
+      </Pressable>
+    );
+  };
+
+  const renderHiddenItem = ({ item }: any, rowMap: any) => {
+    return (
+      <View style={styles.rowBack}>
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={() => handleRemove(item.id)}
+        >
+          <SvgDelete/>
+        </TouchableOpacity>
+      </View>
     );
   };
 
@@ -117,11 +129,16 @@ const MainScreen = ({navigation}: any) => {
         {filteredData.length === 0 ? (
           <Text style={[styles.noBlog, noBlogTextColor]}>No blogs found</Text>
         ) : (
-          <FlatList
+          <SwipeListView
             refreshing={false}
-            onRefresh={getBlog}
+            onRefresh={() => getBlog()}
             data={filteredData}
+            style={styles.card}
             renderItem={renderItem}
+            renderHiddenItem={renderHiddenItem}
+            leftOpenValue={75}
+            rightOpenValue={-75}
+            disableRightSwipe={true}
             keyExtractor={(item: any) => item.id}
             showsVerticalScrollIndicator={false}
           />
@@ -143,8 +160,8 @@ const styles = StyleSheet.create({
     marginVertical: 25,
   },
   card: {
-    flex: 1,
-    marginHorizontal: 5,
+    marginHorizontal: 10,
+    flex:1
   },
   cardItem: {
     flexDirection: 'row',
@@ -158,14 +175,14 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 10,
   },
+  cardText: {
+    flex: 1,
+    marginLeft: 10,
+    justifyContent: 'center',
+  },
   cardItemText: {
     fontWeight: 'bold',
     fontSize: 18,
-    marginLeft: 10,
-  },
-  cardText: {
-    width: WIDTH - 155,
-    marginLeft: 5,
   },
   date: {
     position: 'absolute',
@@ -174,28 +191,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
     paddingVertical: 2,
     paddingHorizontal: 5,
+    color: '#fff',
+    borderRadius: 10,
   },
   loadingContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  delete: {
-    position: 'absolute',
-    right: 5,
-    bottom: 10,
-    width: 40,
-    alignItems: 'center',
-    height: 40,
-    justifyContent: 'center',
-  },
-  dateImage: {
-    position: 'absolute',
-    bottom: 3,
-    left: 5,
-    backgroundColor: '#fff',
-    paddingVertical: 3,
-    paddingHorizontal: 5,
-    borderRadius: 10,
   },
   input: {
     borderRadius: 12,
@@ -214,5 +215,23 @@ const styles = StyleSheet.create({
   },
   inputView: {
     marginBottom: 10,
+  },
+  rowBack: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  deleteButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 16,
+    paddingLeft: 32,
+    paddingRight: 16,
+  },
+  deleteText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 });

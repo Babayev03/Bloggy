@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "416616734802",
+    "project_id": "code-academy-a4b31",
+    "storage_bucket": "code-academy-a4b31.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:416616734802:android:002cef6d1739978a567f8b",
+        "android_client_info": {
+          "package_name": "com.redux"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "416616734802-mf1gun6krmt1ikcct1ksmvel6a5ak1c9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.redux",
+            "certificate_hash": "c4011779d478aaffa5d5689e75f9c47cfae39076"
+          }
+        },
+        {
+          "client_id": "416616734802-nonmgqfpueetg7skslqacbdi8ks71rcu.apps.googleusercontent.com",
+          "client_type": "default_web_client_id" 
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbxjkYHZNLUKgZV87SL-vaRh1YoYoJ3J8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "416616734802-abncasebjgshfrluam3s84s6hji1bgh9.apps.googleusercontent.com",
+              "client_type": "default_web_client_id"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
