@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -11,17 +11,17 @@ import {
   Dimensions,
   Pressable,
 } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import { SwipeListView } from 'react-native-swipe-list-view';
+import {useDispatch, useSelector} from 'react-redux';
+import {SwipeListView} from 'react-native-swipe-list-view';
 import moment from 'moment';
-import { getAllblog, deleteBlog } from '../../../redux/blog/BlogSlice';
-import { getTheme } from '../../../redux/theme/ThemeSlice';
-import { RootState, AppDispatch } from '../../../redux';
+import {getAllblog, deleteBlog} from '../../../redux/blog/BlogSlice';
+import {getTheme} from '../../../redux/theme/ThemeSlice';
+import {RootState, AppDispatch} from '../../../redux';
 import SvgDelete from '../../../assets/images/Delete';
 
 const WIDTH = Dimensions.get('window').width;
 
-const MainScreen = ({ navigation }: any) => {
+const MainScreen = ({navigation}: any) => {
   const [searchQuery, setSearchQuery] = useState('');
   const dispatch = useDispatch<AppDispatch>();
 
@@ -35,7 +35,7 @@ const MainScreen = ({ navigation }: any) => {
   }, []);
 
   const data = useSelector((state: RootState) => state.blog);
-  const themeMode = useSelector<RootState>((state) => state.theme.themeMode);
+  const themeMode = useSelector<RootState>(state => state.theme.themeMode);
 
   const containerStyle: any = {
     flex: 1,
@@ -51,6 +51,8 @@ const MainScreen = ({ navigation }: any) => {
   };
 
   const handleRemove = (id: string) => {
+    console.log(id);
+    
     dispatch(deleteBlog(id));
   };
 
@@ -64,40 +66,43 @@ const MainScreen = ({ navigation }: any) => {
     borderColor: themeMode === 'dark' ? '#fff' : '#000',
   };
 
-  const filteredData = data.datas.filter((item) =>
-    item.title.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredData = data.datas.filter(item =>
+    item.title.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const noBlogTextColor: any = {
     color: themeMode === 'dark' ? '#fff' : '#000',
   };
 
-  const renderItem = ({ item }: any, rowMap: any) => {
+  const renderItem = ({item}: any, rowMap: any) => {
     return (
-      <Pressable style={[styles.cardItem, {backgroundColor: themeMode === 'dark' ? '#000' : '#fff'}]}
-      onPress={() =>navigation.navigate('Detail', {id: item.id})}
-      >
-        <Image source={{ uri: item.avatar }} style={styles.image} />
+      <Pressable
+        style={[
+          styles.cardItem,
+          {backgroundColor: themeMode === 'dark' ? '#000' : '#fff'},
+        ]}
+        onPress={() => navigation.navigate('Detail', {id: item._id})}
+        >
+        <View>
+          <Image source={{uri: item.avatar}} style={styles.image} />
+            <Text style={styles.date}>{formatDate(item.createdAt)}</Text>
+        </View>
         <View style={styles.cardText}>
           <Text style={[styles.cardItemText, cardItemTextColor]}>
             {item.title}
-          </Text>
-          <Text style={styles.date}>
-            {formatDate(item.createdAt)}
           </Text>
         </View>
       </Pressable>
     );
   };
 
-  const renderHiddenItem = ({ item }: any, rowMap: any) => {
+  const renderHiddenItem = ({item}: any, rowMap: any) => {
     return (
       <View style={styles.rowBack}>
         <TouchableOpacity
           style={styles.deleteButton}
-          onPress={() => handleRemove(item.id)}
-        >
-          <SvgDelete/>
+          onPress={() => handleRemove(item._id)}>
+          <SvgDelete />
         </TouchableOpacity>
       </View>
     );
@@ -139,8 +144,8 @@ const MainScreen = ({ navigation }: any) => {
             leftOpenValue={75}
             rightOpenValue={-75}
             disableRightSwipe={true}
-            keyExtractor={(item: any) => item.id}
             showsVerticalScrollIndicator={false}
+            keyExtractor={item => item._id}
           />
         )}
       </View>
@@ -161,7 +166,7 @@ const styles = StyleSheet.create({
   },
   card: {
     marginHorizontal: 10,
-    flex:1
+    flex: 1,
   },
   cardItem: {
     flexDirection: 'row',
@@ -171,14 +176,14 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   image: {
-    width: 120,
-    height: 100,
+    width: 200,
+    height: 150,
     borderRadius: 10,
   },
   cardText: {
-    flex: 1,
-    marginLeft: 10,
-    justifyContent: 'center',
+    marginLeft: 15,
+    marginTop:15,
+    width: WIDTH - 275,
   },
   cardItemText: {
     fontWeight: 'bold',
@@ -188,11 +193,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 5,
     bottom: 5,
-    backgroundColor: 'red',
+    backgroundColor: '#fff',
     paddingVertical: 2,
     paddingHorizontal: 5,
-    color: '#fff',
+    color: '#000',
     borderRadius: 10,
+    fontWeight: 'bold',
   },
   loadingContainer: {
     justifyContent: 'center',

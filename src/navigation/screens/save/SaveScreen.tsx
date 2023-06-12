@@ -48,7 +48,7 @@ const SaveScreen = ({ navigation }: any) => {
   const renderItem = ({ item }: any) => {
     return (
       <TouchableOpacity
-        onPress={() => navigation.navigate('Detail', { id: item.id })}
+        onPress={() => navigation.navigate('Detail', { id: item._id })}
         style={styles.cardItem}
       >
         <View style={styles.image}>
@@ -77,7 +77,7 @@ const SaveScreen = ({ navigation }: any) => {
               showsVerticalScrollIndicator={false}
               data={save}
               renderItem={renderItem}
-              keyExtractor={item => item.id}
+              keyExtractor={item => item._id}
             />
           </View>
         </>
@@ -107,8 +107,8 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   image: {
-    width: 120,
-    height: 100,
+    width: 200,
+    height: 150,
     borderRadius: 10,
   },
   dateImage: {

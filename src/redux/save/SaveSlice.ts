@@ -31,7 +31,7 @@ export const setSaves = createAsyncThunk(
       const existingSaveArray = existingSaves ? JSON.parse(existingSaves) : [];
       if (existingSaveArray.includes(save[0])) {
         const updatedSaves = existingSaveArray.filter(
-          (item: any) => item.id !== save[0].id,
+          (item: any) => item._id !== save[0]._id,
         );
         await AsyncStorage.setItem('savedBlogs', JSON.stringify(updatedSaves));
         return updatedSaves;
@@ -56,7 +56,7 @@ export const saveSlice = createSlice({
       state.save.push(action.payload);
     },
     removeSave: (state, action) => {
-      state.save = state.save.filter(item => item.id !== action.payload.id);
+      state.save = state.save.filter(item => item._id !== action.payload._id);
     },
   },
   extraReducers: builder => {

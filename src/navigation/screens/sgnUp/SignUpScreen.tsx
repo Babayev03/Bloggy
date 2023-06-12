@@ -51,7 +51,6 @@ const SignUpScreen = () => {
           password: data.password,
         })
         .then(res => {
-          console.log(res.data);
           if (!res.data.success) {
             if (res.data.errors && res.data.errors.length > 0) {
               const errorMsgs = res.data.errors.map((error: any) => error.msg);
@@ -60,7 +59,6 @@ const SignUpScreen = () => {
               setError(res.data.errors.msg);
             }
           }
-          console.log('sucess');
           setError('');
           navigation.navigate('Model');
 

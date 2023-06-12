@@ -70,7 +70,7 @@ const EditScreen = ({route, navigation}: any) => {
       return;
     }
     const data = {
-      id: item.id,
+      id: item._id,
       title: title,
       description: description,
     };

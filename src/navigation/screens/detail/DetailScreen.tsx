@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -7,17 +7,19 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {addSave, removeSave} from '../../../redux/save/SaveSlice';
-import {getBlogById} from '../../../redux/blog/BlogSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { addSave, removeSave } from '../../../redux/save/SaveSlice';
+import { getBlogById } from '../../../redux/blog/BlogSlice';
 import SvgArrow from '../../../assets/images/Arrow';
 import SvgHeartIcon from '../../../assets/images/SaveIcon';
-import {AppDispatch, RootState} from '../../../redux';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import { AppDispatch, RootState } from '../../../redux';
+import { Dimensions } from 'react-native';
 
-const DetailScreen = ({route, navigation}: any) => {
+const WIDTH = Dimensions.get('window').width;
+
+const DetailScreen = ({ route, navigation }: any) => {
   const [isSaved, setIsSaved] = useState(false);
-  const {id} = route.params;
+  const { id } = route.params;
 
   const themeMode = useSelector<RootState, any>(
     (state: RootState) => state.theme.themeMode,
@@ -25,7 +27,7 @@ const DetailScreen = ({route, navigation}: any) => {
   const save = useSelector<RootState, any>(
     (state: RootState) => state.save.save,
   );
-  const savedItemIds = save.map((item: any) => item.id);
+  const savedItemIds = save.map((item: any) => item._id);
 
   const containerStyle = {
     flex: 1,
@@ -65,8 +67,8 @@ const DetailScreen = ({route, navigation}: any) => {
   };
 
   return (
-    <ScrollView style={containerStyle} showsVerticalScrollIndicator={false}>
-      <GestureHandlerRootView>
+    <View style={containerStyle}>
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {data.loading === 'pending' ? null : (
           <>
             <View style={styles.header}>
@@ -83,7 +85,7 @@ const DetailScreen = ({route, navigation}: any) => {
             </View>
             <View style={styles.imageContainer}>
               {data.data.avatar ? (
-                <Image source={{uri: data.data.avatar}} style={styles.image} />
+                <Image source={{ uri: data.data.avatar }} style={styles.image} />
               ) : null}
             </View>
             <View style={styles.titleContainer}>
@@ -92,21 +94,24 @@ const DetailScreen = ({route, navigation}: any) => {
             <View style={styles.descriptionContainer}>
               <Text style={styles.description}>{data.data.description}</Text>
             </View>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('Edit', {item: data.data})}
-              style={[styles.editButton, buttonBackColor]}>
-              <Text style={[styles.editText, buttonTextColor]}>Edit</Text>
-            </TouchableOpacity>
           </>
         )}
-      </GestureHandlerRootView>
-    </ScrollView>
+      </ScrollView>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('Edit', { item: data.data })}
+        style={[styles.editButton, buttonBackColor]}>
+        <Text style={[styles.editText, buttonTextColor]}>Edit</Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 
 export default DetailScreen;
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+  },
   arrow: {
     marginVertical: 15,
     marginHorizontal: 20,
@@ -116,7 +121,7 @@ const styles = StyleSheet.create({
     marginVertical: 25,
   },
   image: {
-    width: 315,
+    width: WIDTH - 35,
     height: 250,
     borderRadius: 15,
   },
@@ -142,7 +147,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
-    marginVertical: 25,
+    marginVertical: 10,
   },
   editText: {
     fontSize: 20,
