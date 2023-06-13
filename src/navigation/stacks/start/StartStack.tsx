@@ -6,11 +6,14 @@ import {useEffect} from 'react';
 import {getLoggedIn} from '../../../redux/login/LoginSlice';
 import TabMain from '../../tab/TabMain';
 import RegisterStack from '../register/RegisterStack';
+import { getTheme } from 'react-native-really-awesome-button';
 
 const StartStack = () => {
   const result = useSelector<RootState, any>((state: any) => state.login);
   const dispatch = useDispatch<AppDispatch>();
-  const themeMode = useSelector<RootState>(state => state.theme.themeMode);
+  const themeMode = useSelector<RootState,any>(state => state.theme.themeMode);
+  console.log(themeMode);
+  
 
   useEffect(() => {
     dispatch(getLoggedIn());

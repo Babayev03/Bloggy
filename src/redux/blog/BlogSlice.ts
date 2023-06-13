@@ -21,7 +21,7 @@ export const getAllblog = createAsyncThunk('blog/getAllblog', async () => {
   const token = await AsyncStorage.getItem('token');
 
   const response: any = await axios
-    .get('http://172.16.0.46:3000/api/blogs', {
+    .get('http://172.16.0.172:3000/api/blogs', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -39,7 +39,7 @@ export const getBlogById = createAsyncThunk(
     const token = await AsyncStorage.getItem('token');
 
     const response = await axios.get(
-      `http://172.16.0.46:3000/api/blogs/${id}`,
+      `http://172.16.0.172:3000/api/blogs/${id}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -53,7 +53,7 @@ export const getBlogById = createAsyncThunk(
 export const addBlog = createAsyncThunk('blog/addBlog', async (item: any) => {
   const token = await AsyncStorage.getItem('token');
   const response = await axios.post(
-    'http://172.16.0.46:3000/api/blogs/',
+    'http://172.16.0.172:3000/api/blogs/',
     item,
     {
       headers: {
@@ -71,7 +71,7 @@ export const updateBlog = createAsyncThunk(
     
     const token = await AsyncStorage.getItem('token');
     const response = await axios.put(
-      `http://172.16.0.46:3000/api/blogs/${item.id}`,
+      `http://172.16.0.172:3000/api/blogs/${item.id}`,
       {title: item.title, description: item.description},
       {
         headers: {
@@ -90,7 +90,7 @@ export const deleteBlog = createAsyncThunk(
     console.log(id);
 
     const response = await axios.delete(
-      `http://172.16.0.46:3000/api/blogs/${id}`,
+      `http://172.16.0.172:3000/api/blogs/${id}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
