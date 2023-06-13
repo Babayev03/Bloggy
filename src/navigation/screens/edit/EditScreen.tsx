@@ -12,12 +12,14 @@ import {useDispatch, useSelector} from 'react-redux';
 import {useState} from 'react';
 import {AppDispatch} from '../../../redux';
 import {updateBlog} from '../../../redux/blog/BlogSlice';
+import {set} from 'react-hook-form';
 
 const EditScreen = ({route, navigation}: any) => {
   const {item} = route.params;
 
   const [title, setTitle] = useState<any>(item.title);
   const [description, setDescription] = useState<any>(item.description);
+  const [error, setError] = useState<string>('');
 
   const themeMode = useSelector((state: any) => state.theme.themeMode);
   const dispatch = useDispatch<AppDispatch>();
@@ -25,6 +27,7 @@ const EditScreen = ({route, navigation}: any) => {
   const containerStyle: any = {
     flex: 1,
     backgroundColor: themeMode === 'dark' ? '#000' : '#fff',
+    justifyContent: 'space-between',
   };
 
   const headerTextColor: any = {
@@ -50,76 +53,81 @@ const EditScreen = ({route, navigation}: any) => {
 
   const handleEditBlog = () => {
     if (title === '' || description === '') {
-      Alert.alert('Empty Inputs', 'Please Fill Inputs Then Press Add Again', [
-        {text: 'OK'},
-      ]);
+      setError('Please fill all the fields');
       return;
     } else if (title.length < 5 || description.length < 5) {
-      Alert.alert(
-        'Invalid Inputs',
-        'Please Fill Inputs With 5 Characters At Least Then Press Add Again',
-        [{text: 'OK'}],
-      );
+      setError('Please fill all the fields with 5 characters at least');
       return;
     } else if (title.length > 50) {
-      Alert.alert(
-        'Invalid Inputs',
-        'Please Fill Title Input With 20 Characters At Most Then Press Add Again',
-        [{text: 'OK'}],
-      );
+      setError('Title should be less than 50 characters');
       return;
+    } else {
+      const data = {
+        id: item._id,
+        title: title,
+        description: description,
+      };
+      dispatch(updateBlog(data));
+      navigation.goBack();
     }
-    const data = {
-      id: item._id,
-      title: title,
-      description: description,
-    };
-    dispatch(updateBlog(data));
-    navigation.goBack();
   };
 
   return (
-    <ScrollView style={containerStyle} showsVerticalScrollIndicator={false}>
-      <View style={styles.header}>
-        <Text style={[styles.headerText, headerTextColor]}>Edit Blog</Text>
-      </View>
-      <View style={[styles.input, inputColor]}>
-        <TextInput
-          value={title}
-          onChangeText={setTitle}
-          placeholder="Title"
-          placeholderTextColor={placeHolderTextColor}
-          style={{color: placeHolderTextColor, fontSize: 18}}
-        />
-      </View>
-      <View style={[styles.input, inputColor]}>
-        <TextInput
-          value={description}
-          onChangeText={setDescription}
-          placeholder="Description"
-          placeholderTextColor={placeHolderTextColor}
-          style={{
-            color: placeHolderTextColor,
-            fontSize: 18,
-            textAlignVertical: 'top',
-            width: '100%',
-          }}
-          multiline={true}
-          numberOfLines={3}
-        />
-      </View>
+    <View style={containerStyle}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}>
+        <View style={styles.header}>
+          <Text style={[styles.headerText, headerTextColor]}>Edit Blog</Text>
+        </View>
+        <View style={[styles.input, inputColor]}>
+          <TextInput
+            value={title}
+            onChangeText={setTitle}
+            placeholder="Title"
+            placeholderTextColor={placeHolderTextColor}
+            style={{color: placeHolderTextColor, fontSize: 18}}
+          />
+        </View>
+        <View style={[styles.input, inputColor]}>
+          <TextInput
+            value={description}
+            onChangeText={setDescription}
+            placeholder="Description"
+            placeholderTextColor={placeHolderTextColor}
+            style={{
+              color: placeHolderTextColor,
+              fontSize: 18,
+              textAlignVertical: 'top',
+              width: '100%',
+            }}
+            multiline={true}
+            numberOfLines={3}
+          />
+        </View>
+        {error ? (
+          <View style={{marginHorizontal: 25, paddingTop: 5}}>
+            <Text style={{color: 'red'}}>{error}</Text>
+          </View>
+        ) : (
+          <View style={{height: 24}}></View>
+        )}
+      </ScrollView>
       <TouchableOpacity
         style={[styles.button, buttonBackColor]}
         onPress={() => handleEditBlog()}>
         <Text style={[styles.buttonText, buttonTextColor]}>Edit</Text>
       </TouchableOpacity>
-    </ScrollView>
+    </View>
   );
 };
 
 export default EditScreen;
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+  },
   header: {
     marginTop: 50,
     alignItems: 'center',
@@ -136,7 +144,7 @@ const styles = StyleSheet.create({
   },
   button: {
     marginHorizontal: 16,
-    marginTop: 20,
+    marginVertical: 10,
     borderRadius: 10,
     paddingHorizontal: 10,
     alignItems: 'center',

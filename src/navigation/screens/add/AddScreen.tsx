@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -9,15 +9,18 @@ import {
   ScrollView,
   Image,
 } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch } from '../../../redux';
-import { addBlog } from '../../../redux/blog/BlogSlice';
-import { launchImageLibrary } from 'react-native-image-picker';
+import {useDispatch, useSelector} from 'react-redux';
+import {AppDispatch} from '../../../redux';
+import {addBlog} from '../../../redux/blog/BlogSlice';
+import {launchImageLibrary} from 'react-native-image-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AddScreen = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [base64Data, setbase64Data] = useState('');
+  const [fileUri, setFileUri] = useState<any>();
+  const [error, setError] = useState<string>('');
 
   const themeMode = useSelector((state: any) => state.theme.themeMode);
   const dispatch = useDispatch<AppDispatch>();
@@ -48,48 +51,53 @@ const AddScreen = () => {
     color: themeMode === 'dark' ? '#000' : '#fff',
   };
 
-  const handleAddBlog = () => {
+  const handleAddBlog = async () => {
     if (title === '' || description === '') {
-      Alert.alert('Empty Inputs', 'Please Fill Inputs Then Press Add Again', [
-        { text: 'OK' },
-      ]);
+      setError('Please fill all the fields');
       return;
-    } else if (title.length < 5 || description.length < 5) {
-      Alert.alert(
-        'Invalid Inputs',
-        'Please Fill Inputs With 5 Characters At Least Then Press Add Again',
-        [{ text: 'OK' }],
-      );
+    } else if (fileUri === undefined) {
+      setError('Please upload an image');
       return;
-    } else if (title.length > 50) {
-      Alert.alert(
-        'Invalid Inputs',
-        'Please Fill Title Input With 20 Characters At Most Then Press Add Again',
-        [{ text: 'OK' }],
-      );
+    } else if (title.length < 3) {
+      setError('Title must be at least 3 characters long');
       return;
+    } else if (description.length < 10) {
+      setError('Description must be at least 10 characters long');
+      return;
+    } else if (title.length > 20) {
+      setError('Title must be less than 20 characters long');
+      return;
+    } else {
+      setError('');
+      const userID = await AsyncStorage.getItem('userID');
+      console.log(userID);
+      
+      const blog = {
+        title: title,
+        description: description,
+        avatar: fileUri,
+        user: userID,
+      };
+
+      dispatch(addBlog(blog));
+      setTitle('');
+      setDescription('');
+      setFileUri('');
     }
-
-    const blog = {
-      title: title,
-      description: description,
-    };
-
-    dispatch(addBlog(blog));
-    setTitle('');
-    setDescription('');
   };
 
   const handleUpload = async () => {
     launchImageLibrary(
       {
         mediaType: 'photo',
-        includeBase64: true,
+        includeBase64: false,
       },
       res => {
         const base = res.assets != undefined ? res.assets[0] : null;
         const imageData = base?.base64;
         setbase64Data(imageData == undefined ? '' : imageData);
+        console.log(base);
+        setFileUri(base?.uri);
       },
     );
   };
@@ -106,7 +114,7 @@ const AddScreen = () => {
             onChangeText={setTitle}
             placeholder="Title"
             placeholderTextColor={placeHolderTextColor}
-            style={{ color: placeHolderTextColor, fontSize: 18 }}
+            style={{color: placeHolderTextColor, fontSize: 18}}
           />
         </View>
         <View style={[styles.input, inputColor]}>
@@ -125,27 +133,36 @@ const AddScreen = () => {
             numberOfLines={3}
           />
         </View>
-        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+        {error ? (
+          <View style={{marginHorizontal: 25, paddingTop: 5}}>
+            <Text style={{color: 'red'}}>{error}</Text>
+          </View>
+        ) : (
+          <View style={{height: 24}}></View>
+        )}
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginTop: 50,
+          }}>
           <TouchableOpacity
             style={[styles.uploadButton, buttonBackColor]}
-            onPress={handleUpload}
-          >
+            onPress={handleUpload}>
             <Text style={[styles.uploadButtonText, buttonTextColor]}>
               Upload Image
             </Text>
           </TouchableOpacity>
           <View style={styles.imageContainer}>
-            <Image
-              source={{ uri: `data:image/jpeg;base64,${base64Data}` }}
-              style={styles.selectedImage}
-            />
+            {fileUri && (
+              <Image source={{uri: fileUri}} style={styles.selectedImage} />
+            )}
           </View>
         </View>
       </ScrollView>
       <TouchableOpacity
         style={[styles.button, buttonBackColor]}
-        onPress={handleAddBlog}
-      >
+        onPress={handleAddBlog}>
         <Text style={[styles.buttonText, buttonTextColor]}>Add</Text>
       </TouchableOpacity>
     </View>
@@ -179,7 +196,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
     marginBottom: 20,
-    marginTop:10,
+    marginTop: 10,
   },
   buttonText: {
     fontSize: 18,

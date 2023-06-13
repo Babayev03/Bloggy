@@ -1,4 +1,4 @@
-import {View, Text, Button} from 'react-native';
+import {View, Text, Button, ActivityIndicator} from 'react-native';
 import React from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../../../redux';
@@ -10,16 +10,30 @@ import RegisterStack from '../register/RegisterStack';
 const StartStack = () => {
   const result = useSelector<RootState, any>((state: any) => state.login);
   const dispatch = useDispatch<AppDispatch>();
-  
+  const themeMode = useSelector<RootState>(state => state.theme.themeMode);
 
   useEffect(() => {
     dispatch(getLoggedIn());
   }, []);
 
-  if (result.loggedIn == 'true') {
+  const containerStyle: any = {
+    flex: 1,
+    backgroundColor: themeMode === 'dark' ? '#000' : '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+  };
+
+  if (result.loading === 'pending') {
+    return (
+      <View style={containerStyle}>
+        <ActivityIndicator size="large" color="red" />
+      </View>
+    );
+  } else if (result.loggedIn === 'true') {
     return <TabMain />;
   } else {
-      return <RegisterStack />;
+    return <RegisterStack />;
   }
 };
+
 export default StartStack;

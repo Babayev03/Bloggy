@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Bloggy</string>
+    <string name="google_api_client_id">416616734802-nonmgqfpueetg7skslqacbdi8ks71rcu.apps.googleusercontent.com</string>
 </resources>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -7,19 +7,20 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import { addSave, removeSave } from '../../../redux/save/SaveSlice';
-import { getBlogById } from '../../../redux/blog/BlogSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {addSave, removeSave} from '../../../redux/save/SaveSlice';
+import {getBlogById} from '../../../redux/blog/BlogSlice';
 import SvgArrow from '../../../assets/images/Arrow';
 import SvgHeartIcon from '../../../assets/images/SaveIcon';
-import { AppDispatch, RootState } from '../../../redux';
-import { Dimensions } from 'react-native';
+import {AppDispatch, RootState} from '../../../redux';
+import {Dimensions} from 'react-native';
+import {getLoggedIn} from '../../../redux/login/LoginSlice';
 
 const WIDTH = Dimensions.get('window').width;
 
-const DetailScreen = ({ route, navigation }: any) => {
+const DetailScreen = ({route, navigation}: any) => {
   const [isSaved, setIsSaved] = useState(false);
-  const { id } = route.params;
+  const {id} = route.params;
 
   const themeMode = useSelector<RootState, any>(
     (state: RootState) => state.theme.themeMode,
@@ -38,6 +39,7 @@ const DetailScreen = ({ route, navigation }: any) => {
 
   useEffect(() => {
     dispatch(getBlogById(id));
+    getLoggedIn();
   }, [dispatch, id]);
 
   useEffect(() => {
@@ -53,6 +55,7 @@ const DetailScreen = ({ route, navigation }: any) => {
   };
 
   const data = useSelector<RootState, any>((state: RootState) => state.blog);
+  const result = useSelector<RootState, any>((state: any) => state.login);
 
   const titleText: any = {
     color: themeMode === 'dark' ? '#fff' : '#000',
@@ -68,40 +71,42 @@ const DetailScreen = ({ route, navigation }: any) => {
 
   return (
     <View style={containerStyle}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {data.loading === 'pending' ? null : (
-          <>
-            <View style={styles.header}>
-              <TouchableOpacity
-                style={styles.arrow}
-                onPress={() => navigation.goBack()}>
-                <SvgArrow stroke={themeMode === 'dark' ? '#fff' : '#000'} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.arrow}
-                onPress={() => handleSave(data.data)}>
-                <SvgHeartIcon stroke={'red'} fill={isSaved ? 'red' : 'none'} />
-              </TouchableOpacity>
-            </View>
-            <View style={styles.imageContainer}>
-              {data.data.avatar ? (
-                <Image source={{ uri: data.data.avatar }} style={styles.image} />
-              ) : null}
-            </View>
-            <View style={styles.titleContainer}>
-              <Text style={[styles.title, titleText]}>{data.data.title}</Text>
-            </View>
-            <View style={styles.descriptionContainer}>
-              <Text style={styles.description}>{data.data.description}</Text>
-            </View>
-          </>
-        )}
-      </ScrollView>
-      <TouchableOpacity
-        onPress={() => navigation.navigate('Edit', { item: data.data })}
-        style={[styles.editButton, buttonBackColor]}>
-        <Text style={[styles.editText, buttonTextColor]}>Edit</Text>
-      </TouchableOpacity>
+      {data.loading === 'pending' ? null : (
+        <ScrollView
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}>
+          <View style={styles.header}>
+            <TouchableOpacity
+              style={styles.arrow}
+              onPress={() => navigation.goBack()}>
+              <SvgArrow stroke={themeMode === 'dark' ? '#fff' : '#000'} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.arrow}
+              onPress={() => handleSave(data.data)}>
+              <SvgHeartIcon stroke={'red'} fill={isSaved ? 'red' : 'none'} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.imageContainer}>
+            {data.data.avatar ? (
+              <Image source={{uri: data.data.avatar}} style={styles.image} />
+            ) : null}
+          </View>
+          <View style={styles.titleContainer}>
+            <Text style={[styles.title, titleText]}>{data.data.title}</Text>
+          </View>
+          <View style={styles.descriptionContainer}>
+            <Text style={styles.description}>{data.data.description}</Text>
+          </View>
+        </ScrollView>
+      )}
+      {data.data.user === result.userID ? (
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Edit', {item: data.data})}
+          style={[styles.editButton, buttonBackColor]}>
+          <Text style={[styles.editText, buttonTextColor]}>Edit</Text>
+        </TouchableOpacity>
+      ) : null}
     </View>
   );
 };

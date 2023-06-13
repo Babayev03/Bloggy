@@ -18,6 +18,8 @@ import {getAllblog, deleteBlog} from '../../../redux/blog/BlogSlice';
 import {getTheme} from '../../../redux/theme/ThemeSlice';
 import {RootState, AppDispatch} from '../../../redux';
 import SvgDelete from '../../../assets/images/Delete';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {getLoggedIn} from '../../../redux/login/LoginSlice';
 
 const WIDTH = Dimensions.get('window').width;
 
@@ -36,6 +38,8 @@ const MainScreen = ({navigation}: any) => {
 
   const data = useSelector((state: RootState) => state.blog);
   const themeMode = useSelector<RootState>(state => state.theme.themeMode);
+  const result = useSelector<RootState, any>((state: any) => state.login);
+
 
   const containerStyle: any = {
     flex: 1,
@@ -52,7 +56,7 @@ const MainScreen = ({navigation}: any) => {
 
   const handleRemove = (id: string) => {
     console.log(id);
-    
+
     dispatch(deleteBlog(id));
   };
 
@@ -81,16 +85,18 @@ const MainScreen = ({navigation}: any) => {
           styles.cardItem,
           {backgroundColor: themeMode === 'dark' ? '#000' : '#fff'},
         ]}
-        onPress={() => navigation.navigate('Detail', {id: item._id})}
-        >
+        onPress={() => navigation.navigate('Detail', {id: item._id})}>
         <View>
           <Image source={{uri: item.avatar}} style={styles.image} />
-            <Text style={styles.date}>{formatDate(item.createdAt)}</Text>
+          <Text style={styles.date}>{formatDate(item.createdAt)}</Text>
         </View>
         <View style={styles.cardText}>
           <Text style={[styles.cardItemText, cardItemTextColor]}>
             {item.title}
           </Text>
+          {item.user == result.userID ? (
+            <Text style={{color: themeMode == 'dark'? '#fff':'#000', fontWeight:"bold",position:"absolute",bottom:5,opacity:0.5}}>Created By You</Text>
+          ) : null}
         </View>
       </Pressable>
     );
@@ -182,7 +188,7 @@ const styles = StyleSheet.create({
   },
   cardText: {
     marginLeft: 15,
-    marginTop:15,
+    marginTop: 15,
     width: WIDTH - 275,
   },
   cardItemText: {

@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   cardText: {
-    width: WIDTH - 155,
+    width: WIDTH - 225,
     marginLeft: 5,
   },
   delete: {
