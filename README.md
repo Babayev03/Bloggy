@@ -80,4 +80,4 @@ npm install
 
 ## Authors
 
-* **Ilham Babayev** - *Code Academy React Native Student* - [Ilham Babayev](https://github.com/Babayev03) - **
+* **Ilham Babayev** - *Code Academy React Native Student* - [Ilham Babayev](https://github.com/Babayev03)
